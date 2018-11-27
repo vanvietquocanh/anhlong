@@ -1,25 +1,19 @@
 module.exports = `<div class="container mt-2">
-						<form action="dashboardUser_submit" class="form-group row" method="get" accept-charset="utf-8">
+						<form action="/dashboard/search" class="form-group row" method="get" accept-charset="utf-8">
 							<div class="col-sm-3">
 								<label for="exampleInputEmail1">Tên Package</label>
-								<select class="custom-select">
-								  <option selected>Tên Package</option>
-								  <option value="1">1</option>
-								  <option value="2">2</option>
-								</select>
+								<input type="text" name="package" placeholder="Tên package..." class="form-control">
 							</div>
 							<div class="col-sm-3">
 								<label for="exampleInputEmail1">Model</label>
-								<select class="custom-select">
-								  <option selected>Model</option>
-								  <option value="1">1</option>
-								  <option value="2">2</option>
+								<select class="custom-select" name="model">
+								  <option selected value="MIA1">MIA1</option>
 								</select>
 							</div>
 							<div class="col-sm-3">
 								<label for="exampleInputEmail1">CPU</label>
-								<select class="custom-select">
-								  <option selected>Open this select menu</option>
+								<select class="custom-select" name="cpu">
+								  <option selected value="Unknown">Không xác định</option>
 								  <option value="1">1</option>
 								  <option value="2">2</option>
 								</select>

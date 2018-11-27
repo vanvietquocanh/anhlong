@@ -3,18 +3,22 @@ var express = require('express');
 var path = require('path');
 var session = require("express-session");
 var cookieParser = require('cookie-parser');
+var favicon = require('serve-favicon')
 var passport = require('passport');
 var infoAPI = require("./routes/apiInfo.js");
 var FacebookStrategy = require('passport-facebook');
 var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
 
-var signinRouter = require('./routes/signin');
 var adminRedirect = require('./routes/admin.redirect');
 
 var indexRouter = require('./routes/index');
-var dashboardRouter = require('./routes/get.dashboardUser');
+var dropRouter = require('./routes/post.drop');
+var activeRouter = require('./routes/post.active');
+var updateRouter = require('./routes/post.update');
+var dashboardRouter = require('./routes/get.dashboard');
 var shareRouter = require('./routes/post.share');
+var logoutRouter = require('./routes/logout');
 
 var app = express();
 
@@ -22,6 +26,8 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+
+app.use(favicon(path.join(__dirname, 'public', 'icon.ico')))
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -57,11 +63,15 @@ passport.deserializeUser((id, done)=>{
   done(null, id)
 })
 app.route("/facebook").get(passport.authenticate("facebook"));
-app.use('/signin', signinRouter);
+app.get('/signin', passport.authenticate('facebook'));
 app.use('/admin', adminRedirect);
 app.use('/', indexRouter);
 app.use('/dashboard', dashboardRouter);
+app.use('/drop', dropRouter);
+app.use('/ad', activeRouter);
+app.use('/update', updateRouter);
 app.use('/share', shareRouter);
+app.use('/logout', logoutRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

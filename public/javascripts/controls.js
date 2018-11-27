@@ -91,4 +91,86 @@ jQuery(document).ready(function($) {
 			$(".fix-wait-show").hide("slow");
 		}, 1000);
 	}, 500);
+	$(".d-none").hide();
+	$("tr").click(function(event) {
+		if($(this).next().attr("class").indexOf("d-none")!==-1){
+			$(this).next().removeClass("d-none").addClass("active").fadeIn('slow')
+		}else if($(this).next().attr("class").indexOf("active")!==-1){
+			$(this).next().removeClass("active").addClass("d-none").hide('slow')
+		}
+	});
+	if($("#content-script").length!==0){
+		$("form").submit(function(event) {
+			if($("#package").val()===""||$("#model").val()===""||$("#cpu").val()===""||$("#content-script").val()===""){
+				event.preventDefault();
+				alert("Vui lòng điền đầy đủ thông tin!")
+			}
+		})
+	}
+	if($(".btn.btn-danger").length!==0){
+		$(".btn.btn-danger").click(function(event) {
+			event.stopPropagation();
+			let conf = confirm("Bạn chắc chắn muốn xóa?");
+			if(conf){
+				var id = $(this).parent().parent().attr("class")
+				var path = "/drop?script=";
+				if(window.location.pathname==="/dashboard/admin"){
+					path+="0"
+				}else{
+					path+="1"
+				}
+				$.post(path, {id: id}, function(res, textStatus, xhr) {
+					if(res==="success"){
+						$(`.${id}`).remove()
+					}else{
+						alert('Lỗi! Vui lòng thử lại!');
+					}
+				});
+			}
+		});
+		$("#drop-update").click(function(event) {
+			$("form").attr("action","/share")
+			$("#submit").removeClass('d-none')
+			$("#update").addClass('d-none').hide();
+			$("#drop-update").addClass('d-none').hide();
+		});
+		$(".edit-ele").click(function(event) {
+			event.stopPropagation();
+			$("form").attr("action","/update")
+			$("#submit").addClass('d-none')
+			$("#update").removeClass('d-none').fadeIn();
+			$("#drop-update").removeClass('d-none').fadeIn();
+			$("form").append(`<input value="${$(this).parent().parent().attr("class")}" class="_id d-none" name="_id" type="text">`)
+			$("#package").val($(this).parent().parent().children(`.package`).text())
+			$("#model").val($(this).parent().parent().children(`.model`).text())
+			$("#cpu").val($(this).parent().parent().children(`.cpu`).text())
+			$("#content-script").val($(this).parent().parent().next().children().html().split("<br>").join("\r\n").trim())
+		});
+	}
+	if($(".btn.btn-success").length!==0){
+		$("tr").unbind('click')
+		$(".btn.btn-success").click(function(event) {
+			var id = $(this).parent().parent().attr("class");
+			$.post('/ad/active', {id:id}, function(res, textStatus, xhr) {
+				if(res==="success"){
+					$(`.${id}`).remove()
+				}else{
+					alert('Lỗi! Vui lòng thử lại!');
+				}
+			});
+		});
+	}
+	if($(".btn.btn-warning").length!==0){
+		$("tr").unbind('click')
+		$(".btn.btn-warning").click(function(event) {
+			var id = $(this).parent().parent().attr("class");
+			$.post('/ad/inactive', {id:id}, function(res, textStatus, xhr) {
+				if(res==="success"){
+					$(`.${id}`).remove()
+				}else{
+					alert('Lỗi! Vui lòng thử lại!');
+				}
+			});
+		});
+	}
 });

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title><%-title.charAt(0).toUpperCase() + title.slice(1)%> | Script</title>
+	<title><%-userName%> | <%-title.charAt(0).toUpperCase() + title.slice(1)%> Script</title>
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
@@ -20,16 +20,16 @@
 		<nav class="navbar navbar-expand-sm bg-primary navbar-primary">
 		  <ul class="navbar-nav">
 		    <li class="nav-item active">
-		      <a class="nav-link text-light" href="#">Active</a>
+		      <a class="nav-link text-light" href="#"><img style="border-radius: 15em;" src="<%-image%>" alt="<%-userName%>"></a>
 		    </li>
 		    <li class="nav-item">
-		      <a class="nav-link text-light" href="/dashboard/search">Tìm Package</a>
+		      <a class="nav-link text-light" style="line-height: 3em;" href="/dashboard/search">Tìm Package</a>
 		    </li>
 		    <li class="nav-item">
-		      <a class="nav-link text-light" href="/dashboard/share">Chia sẽ Package</a>
+		      <a class="nav-link text-light" style="line-height: 3em;" href="/dashboard/share">Chia sẽ Package</a>
 		    </li>
 		    <li class="nav-item">
-		      <a class="nav-link text-light" href="/logout">Đăng Xuất</a>
+		      <a class="nav-link text-light" style="line-height: 3em;" href="/logout">Đăng Xuất</a>
 		    </li>
 		  </ul>
 		</nav>
@@ -37,20 +37,20 @@
 	<%-control%>
 	<div class="container">
 		<div class="form-group row">
-			<div class="col-sm-3 ml-auto">
+			<div class="col-sm-6 ml-auto">
 				<label class="labelRow w-100 text-center" for="maxRows">Số hàng / trang</label>
 			</div>
 			<div class="col-sm-6">
 		 		<input class="form-control" min="0" max="" type="number" name="state" id="maxRows">
 			</div>	
-			<div class='pagination-container col-sm-3' >
+			<div class='pagination-container col-sm-12' >
 					<nav>
 					  <ul class="pagination">      
-	            <li data-page="prev" class="form-control mr-1 btn btn-primary" >
+	            <li data-page="prev" class="mr-1 btn btn-primary" >
 									     <span> < <span class="sr-only">(current)</span></span>
 									    </li>
 					   <!--	Here the JS Function Will Add the Rows -->
-	        <li data-page="next" id="prev" class="form-control ml-1 btn btn-primary">
+	        <li data-page="next" id="prev" class="ml-1 btn btn-primary">
 									       <span> > <span class="sr-only">(current)</span></span>
 									    </li>
 					  </ul>
@@ -63,27 +63,48 @@
 			<table id="table-pagination" class="table table-striped table-hover table-success" cellspacing="0">
 				<thead>
 				    <tr>
-		                <th scope="col" class="hidden-320px show-640px">#</th>
-		                <th scope="col" class="hidden-320px show-568px">Package</th>
-		                <th scope="col" class="hidden-320px show-720px">Model</th>
+		                <th scope="col">#</th>
+		                <th scope="col">Package</th>
+		                <th scope="col">Ngày đăng</th>
+		                <th scope="col">Model</th>
 		                <th scope="col">CPU</th>
-		                <th scope="col">Script</th>
+		                <th scope="col">Người chia sẽ</th>
 		                <%-(view)?view:""%>
 		            </tr>
 				</thead>
 				<tbody>
 					<%for (var i = 0; i < data.length; i++) {%>
-					    <tr>
-					      	<th scope="row" class="hidden-320px show-640px"><%-i+1%></th>
-					      	<td class="hidden-320px show-568px"><%-data[i].package%></td>
-					      	<td class="hidden-320px show-720px"><%-data[i].model%></td>
-					      	<td><%-data[i].cpu%></td>
-					      	<td><%-data[i]['content-script']%></td>
+					    <tr class="<%-data[i]._id%>">
+					      	<th scope="row"><%-i+1%></th>
+					      	<td class="package"><%-data[i].package%></td>
+					      	<td class=""><%-new Date(Number(data[i].time)).getDate()%>/<%-new Date(Number(data[i].time)).getMonth()+1%>/<%-new Date(Number(data[i].time)).getFullYear()%></td>
+					      	<td class="model"><%-data[i].model%></td>
+					      	<td class="cpu"><%-data[i].cpu%></td>
+					      	<td><%-data[i]['name']%></td>
+					      	<%if(view){%>
+							<td><button class="btn btn-primary mr-2 edit-ele"><i class="fa fa-pencil"></i></button><button class="btn btn-danger"><i class="fa fa-trash"></i></button></td>
+					      	<%}%>
+					    </tr>
+					    <tr class="d-none <%-data[i]._id%>">
+					    	<td colspan="<%-(view)?7:6%>" class="content-script">
+					    		<%-data[i]['content-script'].split("\r\n").join("<br>")%>
+					    	</td>
 					    </tr>
 					<%}%>
 			  	</tbody>
 			</table>
 		</div>
 	</div>
+	<!-- Footer -->
+	<footer class="page-footer font-small blue">
+
+		<!-- Copyright -->
+		<div class="footer-copyright text-center py-3">© 2018 Copyright:
+		    <a href="https://www.facebook.com/quocanh.vanviet" target="_blank"> Bon Đẹp Trai </a>
+		</div>
+		<!-- Copyright -->
+
+	</footer>
+	<!-- Footer -->
 </body>
 </html>
